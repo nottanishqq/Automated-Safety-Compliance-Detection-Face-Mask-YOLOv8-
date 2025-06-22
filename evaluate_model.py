@@ -9,7 +9,6 @@ import numpy as np
 from datetime import datetime
 
 def load_training_results(project_path):
-    """Load training results from YOLOv8 output"""
     results_file = Path(project_path) / 'results.csv'
     if results_file.exists():
         import pandas as pd
@@ -17,7 +16,6 @@ def load_training_results(project_path):
     return None
 
 def evaluate_model_performance(model_path, dataset_yaml):
-    """Evaluate model performance and generate detailed metrics"""
     
     # Load model
     model = YOLO(model_path)
@@ -45,7 +43,6 @@ def evaluate_model_performance(model_path, dataset_yaml):
     return metrics, results
 
 def generate_per_class_metrics(results):
-    """Generate per-class performance metrics"""
     
     # Get confusion matrix
     conf_matrix = results.confusion_matrix.matrix
@@ -93,11 +90,10 @@ def plot_training_curves(project_path):
     import pandas as pd
     df = pd.read_csv(results_file)
     
-    # Create plots
     fig, axes = plt.subplots(2, 2, figsize=(15, 10))
     fig.suptitle('YOLOv8 Training Curves', fontsize=16)
     
-    # Loss curves
+   
     axes[0, 0].plot(df['epoch'], df['train/box_loss'], label='Train Box Loss')
     axes[0, 0].plot(df['epoch'], df['val/box_loss'], label='Val Box Loss')
     axes[0, 0].set_title('Box Loss')
@@ -114,7 +110,7 @@ def plot_training_curves(project_path):
     axes[0, 1].legend()
     axes[0, 1].grid(True)
     
-    # mAP curves
+
     axes[1, 0].plot(df['epoch'], df['metrics/mAP50(B)'], label='mAP@0.5')
     axes[1, 0].plot(df['epoch'], df['metrics/mAP50-95(B)'], label='mAP@0.5:0.95')
     axes[1, 0].set_title('mAP Metrics')
@@ -123,7 +119,7 @@ def plot_training_curves(project_path):
     axes[1, 0].legend()
     axes[1, 0].grid(True)
     
-    # Precision/Recall curves
+  
     axes[1, 1].plot(df['epoch'], df['metrics/precision(B)'], label='Precision')
     axes[1, 1].plot(df['epoch'], df['metrics/recall(B)'], label='Recall')
     axes[1, 1].set_title('Precision & Recall')
@@ -150,7 +146,7 @@ def generate_evaluation_report(metrics, per_class_metrics, results):
         }
     }
     
-    # Save report
+
     with open('evaluation_report.json', 'w') as f:
         json.dump(report, f, indent=2)
     
@@ -161,18 +157,18 @@ def generate_evaluation_report(metrics, per_class_metrics, results):
 def main():
     """Main evaluation function"""
     
-    # Configuration
+
     model_path = 'face_mask_detection/yolov8_face_mask/weights/best.pt'
     dataset_yaml = 'dataset.yaml'
     project_path = 'face_mask_detection/yolov8_face_mask'
     
-    # Check if model exists
+
     if not os.path.exists(model_path):
         print(f"Model not found at {model_path}")
         print("Please run training first: python train_yolov8.py")
         return
     
-    # Check if dataset.yaml exists
+
     if not os.path.exists(dataset_yaml):
         print(f"Dataset configuration not found at {dataset_yaml}")
         print("Please run training first to generate dataset configuration")
@@ -180,16 +176,15 @@ def main():
     
     print("Starting model evaluation...")
     
-    # Evaluate model performance
     metrics, results = evaluate_model_performance(model_path, dataset_yaml)
     
-    # Generate per-class metrics
+
     per_class_metrics = generate_per_class_metrics(results)
     
-    # Generate evaluation report
+
     report = generate_evaluation_report(metrics, per_class_metrics, results)
     
-    # Plot training curves if available
+
     plot_training_curves(project_path)
     
     print("\n=== Evaluation Complete ===")
