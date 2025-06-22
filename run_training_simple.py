@@ -1,9 +1,3 @@
-#!/usr/bin/env python3
-"""
-Simplified quick start script for face mask detection training and evaluation
-(Skips dependency checks)
-"""
-
 import os
 import sys
 import subprocess
