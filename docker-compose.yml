@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  face-mask-detection:
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      # Mount model directory for persistence
+      - ./face_mask_detection:/app/face_mask_detection
+      # Mount dataset for training
+      - ./Labeled Mask Dataset:/app/Labeled Mask Dataset
+    environment:
+      - FLASK_ENV=production
+      - PYTHONPATH=/app
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s 
